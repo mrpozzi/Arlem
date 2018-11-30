@@ -1,13 +1,8 @@
-import sys
-import math
 import numpy as np
 
 from statsmodels.distributions.empirical_distribution import StepFunction
 from statsmodels.nonparametric.kernel_density import KDEMultivariate
 from lifelines import KaplanMeierFitter
-
-
-SQRT_DBL_EPSILON = math.sqrt(sys.float_info.epsilon)
 
 
 def get_survival_function(time, event, entry=None):
@@ -20,8 +15,24 @@ def get_survival_function(time, event, entry=None):
                         sorted=True, side='right')
 
 
-def initQ(full_data, x_grid, v_grid,
-          delta_star, tau=100, verbose=False):
+def compute_normalization(Q2, x_grid, v_grid):
+    normalizing_constant = 0.0
+
+    for i, _ in enumerate(x_grid[1:]):
+        for j, _ in enumerate(v_grid[1:]):
+            phi00 = Q2[i, j]
+            phi10 = Q2[i, j + 1]
+            phi01 = Q2[i + 1, j]
+            phi11 = Q2[i + 1, j + 1]
+
+            normalizing_constant += ((x_grid[j + 1] - x_grid[j]) * (v_grid[i + 1] - v_grid[i]) *
+                                     ((phi00 + phi01 + phi11) / 3. +
+                                      (phi00 + phi10 + phi11) / 3.) / 2.)
+    return normalizing_constant
+
+
+def init_Q(full_data, x_grid, v_grid,
+           delta_star, tau=100, verbose=False):
 
     obs_data = full_data[(full_data.delta0 * full_data.delta1 == 1)]
     obs_data = obs_data[obs_data.x != 0]
@@ -31,9 +42,9 @@ def initQ(full_data, x_grid, v_grid,
                                event=1 - full_data.delta1)
     # QcFit<-survfit(Surv(fullData$v-fullData$w,1-fullData$delta1)~1)
 
-    Sn = get_survival_function(time=full_data.w,
+    Sn = get_survival_function(time=full_data.v,
                                event=full_data.delta1,
-                               entry=full_data.v)
+                               entry=full_data.w)
     """
     Snfit = survfit(Surv(full_data$w,
                                    full_data$v,
@@ -76,58 +87,11 @@ def initQ(full_data, x_grid, v_grid,
     if verbose:
         print("Renormalization Constant: {}".format(normalizing_constant))
 
-
     Q2 /= normalizing_constant
 
     return {'Sn': Sn, 'dGn': dGn, 'Qc': Qc}, Q2
 
 
-def compute_normalization(Q2, x_grid, v_grid):
-    
-    normalizing_constant = 0.0
 
-    for i, _ in enumerate(x_grid[1:]):
-        for j, _ in enumerate(v_grid[1:]):
-            
-            phi00 = Q2[i, j]
-            phi10 = Q2[i, j+1]
-            phi01 = Q2[i+1, j]
-            phi11 = Q2[i+1, j+1]
-
-            normalizing_constant += ((x_grid[j+1] - x_grid[j]) * (v_grid[i+1] - v_grid[i]) *
-                                     ((phi00+phi01+phi11) / 3. +
-                                      (phi00+phi10+phi11) / 3.) / 2.)
-    return normalizing_constant
-
-
-def initT(full_data, Qc, dGn, delta_star, x_grid, v_grid):
-
-    w, dGn = zip(*sorted(zip(full_data.w, dGn)))
-    n = len(w)
-
-    T1 = np.zeros((len(x_grid), len(v_grid)))
-    T2 = np.zeros((len(x_grid), len(v_grid)))
-
-    for i, x in enumerate(x_grid):
-        for j, v in enumerate(v_grid):
-
-            if v > x + delta_star:
-                denominator = 0.0
-                k = 0
-
-                while True:
-                    if k >= n:
-                        break
-                    if v >= w[k]:
-                        break
-                    if w[k] > x:
-                        denominator += dGn[k] * Qc(v - w[k])
-                    k += 1
-
-                if denominator > SQRT_DBL_EPSILON:
-                    T1[i, j] = (v - x) / denominator
-                    T2[i, j] = 1 / denominator
-
-    return T1, T2
 
 
