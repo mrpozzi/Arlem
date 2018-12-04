@@ -1,9 +1,5 @@
 import numpy as np
-import sys
-import math
-
-
-SQRT_DBL_EPSILON = math.sqrt(sys.float_info.epsilon)
+from harlem.utils import SQRT_DBL_EPSILON
 
 
 def init_T(full_data, Qc, dGn, delta_star, x_grid, v_grid):
