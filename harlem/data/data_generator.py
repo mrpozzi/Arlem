@@ -8,7 +8,8 @@ from scipy.interpolate import interp1d
 from scipy.stats import beta, expon
 
 from harlem.parameters.init_T import SQRT_DBL_EPSILON
-from harlem.data.independent_margins import IndependentMargins
+#from harlem.data.independent_margins import IndependentMargins
+from harlem.data.harlem_copula import HarlemCopula
 
 
 class DataGeneratorHarlem(object):
@@ -19,7 +20,8 @@ class DataGeneratorHarlem(object):
                  lambda_fun=lambda x: 1 * ((x >= 10) & (x <= 70)),
                  par=None,
                  rate=0.017,
-                 joint_distribution=IndependentMargins(),
+                 #joint_distribution=IndependentMargins(),
+                 joint_distribution=HarlemCopula(),
                  n_grid=200):
 
         if not par:
@@ -137,7 +139,7 @@ class DataGeneratorHarlem(object):
                 new_data = pd.DataFrame({"x": x, "z": z, "w": w,  "delta0": delta0, "delta1": delta1, "c": c})
 
                 # v[ind] < - apply(cbind(w[valid] + c, xv[valid, 1]), 1, min)
-                new_data["v"] =  new_data.apply(lambda row: min(self.tau, row["z"], row["w"] + row["c"]), axis=1)
+                new_data["v"] = new_data.apply(lambda row: min(self.tau, row["z"], row["w"] + row["c"]), axis=1)
                 full_data = full_data.append(new_data, ignore_index=True, sort=True)
 
                 count += n_valid

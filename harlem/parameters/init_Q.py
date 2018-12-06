@@ -25,7 +25,7 @@ def compute_normalization(Q2, x_grid, v_grid):
             phi01 = Q2[i + 1, j]
             phi11 = Q2[i + 1, j + 1]
 
-            normalizing_constant += ((x_grid[j + 1] - x_grid[j]) * (v_grid[i + 1] - v_grid[i]) *
+            normalizing_constant += ((x_grid[i + 1] - x_grid[i]) * (v_grid[j + 1] - v_grid[j]) *
                                      ((phi00 + phi01 + phi11) / 3. +
                                       (phi00 + phi10 + phi11) / 3.) / 2.)
     return normalizing_constant
@@ -62,12 +62,7 @@ def init_Q(full_data, x_grid, v_grid,
 
     # w = full_data.w
 
-    Q2 = np.zeros((len(v_grid), len(x_grid)))
-
-    #W = [1, 2 ^ ((1:(N-1)) % % 2 + 1), 1]
-    #W = W % * % t(W)
-
-    # a_vGrid[i] - a_xGrid[j], a_xGrid[j]
+    Q2 = np.zeros((len(x_grid), len(v_grid)))
 
     kde = KDEMultivariate([obs_data.v.T - obs_data.x.T, obs_data.v.T],
                           bw='cv_ml', var_type='cc')
