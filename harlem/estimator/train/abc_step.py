@@ -1,8 +1,6 @@
-import numpy as np
-
-from harlem.utils import SQRT_DBL_EPSILON, quick_simpson
-
 from abc import abstractmethod, ABCMeta
+
+from harlem.utils import SQRT_DBL_EPSILON
 
 
 class ABCStep(object):

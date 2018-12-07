@@ -20,7 +20,7 @@ class DataGeneratorHarlem(object):
                  lambda_fun=lambda x: 1 * ((x >= 10) & (x <= 70)),
                  par=None,
                  rate=0.017,
-                 #joint_distribution=IndependentMargins(),
+                 # joint_distribution=IndependentMargins(),
                  joint_distribution=HarlemCopula(),
                  n_grid=200):
 
