@@ -35,7 +35,7 @@ class ABCStep(object):
         self.lambda_fun = lambda_fun
         self.lambda_grid = lambda_fun(x_grid)
 
-        self.norm_grad = None
+        self.normalized_gradient = None
         self.log_likelihood = None
         self.epsilon_opt = None
         self.converged = False
@@ -47,7 +47,7 @@ class ABCStep(object):
                 epsilon_opt={epsilon_opt},
                 converged={converged})""".format(
             name=self.__class__,
-            gradient=self.norm_grad,
+            gradient=self.normalized_gradient,
             log_likelihood=self.log_likelihood,
             epsilon_opt=self.epsilon_opt,
             converged=self.converged,

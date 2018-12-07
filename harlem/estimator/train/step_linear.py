@@ -20,10 +20,10 @@ class StepLinear(ABCStep):
 
         if self.verbose:
             print("D: {norm_grad}, |  log-Likelihood = {log_likelihood}".format(
-                norm_grad=self.norm_grad,
+                norm_grad=self.normalized_gradient,
                 log_likelihood=self.log_likelihood))
 
-        self.converged = (np.abs(self.norm_grad).max() < self.tol)
+        self.converged = (np.abs(self.normalized_gradient).max() < self.tol)
         return Q2
 
     def tmle_step(self, Q2):
@@ -75,7 +75,7 @@ class StepLinear(ABCStep):
 
         Q2 /= normalizing_constant
 
-        self.norm_grad = norm_grad
+        self.normalized_gradient = norm_grad
         self.log_likelihood = log_likelihood
         self.epsilon_opt = epsilon_opt
 
