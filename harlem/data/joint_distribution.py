@@ -18,8 +18,8 @@ class JointDistribution(object):
         if margins is None:
             margins = {'x': beta, 'z': beta}
         if param_margins is None:
-            param_margins = {'x': {'a': 20, 'b': 5},
-                             'z': {'a': 5, 'b': 7}}
+            param_margins = {'z': {'a': 20, 'b': 5},
+                             'x': {'a': 5, 'b': 7}}
 
         self.margins = margins
         self.param_margins = param_margins

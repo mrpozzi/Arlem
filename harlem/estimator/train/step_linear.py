@@ -54,7 +54,6 @@ class StepLinear(ABCStep):
             q2_obs = interp_Q2(x, v)
             offset += np.log(q2_obs)
 
-
         offset /= self.n_full
         log_likelihood = offset + f_max
 
