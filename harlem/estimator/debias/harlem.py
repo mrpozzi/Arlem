@@ -14,7 +14,7 @@ class HarlemABC(object):
                  estimator=LinearEstimator,
                  delta_star=None,
                  tau=100,
-                 n_grid=100,
+                 n_grid=300,
                  lambda_fun=lambda x: 1 * ((x >= 10) & (x <= 70)),
                  Q0=None,
                  T0=None,

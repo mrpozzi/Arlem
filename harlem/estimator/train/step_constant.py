@@ -1,7 +1,8 @@
 import numpy as np
 from scipy import interpolate
+from scipy.integrate import simps
 
-from harlem.utils import SQRT_DBL_EPSILON, quick_simpson
+from harlem.utils import SQRT_DBL_EPSILON
 from harlem.estimator.train.abc_step import ABCStep
 from harlem.parameters.init_Q import compute_normalization
 
@@ -28,8 +29,8 @@ class StepConstant(ABCStep):
 
     def tmle_step(self, Q2):
 
-        t1_slice = np.apply_along_axis(lambda f: quick_simpson(f, self.v_grid), 1, self.T1 * Q2)
-        t2_slice = np.apply_along_axis(lambda f: quick_simpson(f, self.v_grid), 1, self.T2 * Q2)
+        t1_slice = np.apply_along_axis(lambda f: simps(f, self.v_grid), 1, self.T1 * Q2)
+        t2_slice = np.apply_along_axis(lambda f: simps(f, self.v_grid), 1, self.T2 * Q2)
 
         # Compute the Gradient and the boundaries for the optimization problem
         gradient = (np.apply_along_axis(lambda t1: [0 if (np.abs(d) < SQRT_DBL_EPSILON) else n / d

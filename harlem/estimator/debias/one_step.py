@@ -3,7 +3,8 @@ import scipy.integrate as integrate
 from scipy import interpolate
 
 from harlem.estimator.debias.harlem import HarlemABC
-from harlem.utils import SQRT_DBL_EPSILON, quick_simpson
+from harlem.utils import SQRT_DBL_EPSILON
+from scipy.integrate import simps
 
 
 class HarlemOneStep(HarlemABC):
@@ -17,8 +18,8 @@ class HarlemOneStep(HarlemABC):
 
     def fit(self):
 
-        t1_slice = np.apply_along_axis(lambda f: quick_simpson(f, self.v_grid), 1, self.T1 * self.Q2)
-        t2_slice = np.apply_along_axis(lambda f: quick_simpson(f, self.v_grid), 1, self.T2 * self.Q2)
+        t1_slice = np.apply_along_axis(lambda f: simps(f, self.v_grid), 1, self.T1 * self.Q2)
+        t2_slice = np.apply_along_axis(lambda f: simps(f, self.v_grid), 1, self.T2 * self.Q2)
 
         gradient = (np.apply_along_axis(lambda f: self._process_t(f, t1_slice), 0, self.T1) -
                     np.apply_along_axis(lambda f: self._process_t(f, t2_slice), 0, self.T2)) / (self.n_obs / self.n_full)

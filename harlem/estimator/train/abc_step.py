@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABCMeta
 
-from harlem.utils import SQRT_DBL_EPSILON
+import numpy as np
 
 
 class ABCStep(object):
@@ -11,7 +11,7 @@ class ABCStep(object):
                  x_grid, v_grid,
                  delta_star, tau=100,
                  lambda_fun=lambda x: 1 * ((x >= 10) & (x <= 70)),
-                 tol=SQRT_DBL_EPSILON, verbose=False):
+                 tol=None, verbose=False):
 
         obs_data = full_data[(full_data.delta0 * full_data.delta1 == 1)]
         obs_data = obs_data[obs_data.x != 0]
@@ -21,6 +21,9 @@ class ABCStep(object):
         self.v = obs_data.v
         self.x = obs_data.x
         self.n_full = obs_data.shape[0]
+
+        if tol is None:
+            tol = 1/ np.sqrt(self.n_full)
 
         self.T1 = T1
         self.T2 = T2

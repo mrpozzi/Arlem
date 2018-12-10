@@ -3,7 +3,8 @@ import numpy as np
 import scipy.integrate as integrate
 
 
-from harlem.utils import SQRT_DBL_EPSILON, quick_simpson
+from harlem.utils import SQRT_DBL_EPSILON
+from scipy.integrate import simps
 
 
 class ABCEstimator(object):
@@ -46,8 +47,8 @@ class ABCEstimator(object):
 
     def _init_R(self, Q2):
 
-        t1_slice = np.apply_along_axis(lambda f: quick_simpson(f, self.v_grid), 1, self.T1 * Q2)
-        t2_slice = np.apply_along_axis(lambda f: quick_simpson(f, self.v_grid), 1, self.T2 * Q2)
+        t1_slice = np.apply_along_axis(lambda f: simps(f, self.v_grid), 1, self.T1 * Q2)
+        t2_slice = np.apply_along_axis(lambda f: simps(f, self.v_grid), 1, self.T2 * Q2)
 
         R2 = [1 if (np.abs(d) < SQRT_DBL_EPSILON) else n / d
               for n, d in zip(t1_slice, t2_slice)]
