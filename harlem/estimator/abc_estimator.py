@@ -18,7 +18,6 @@ class ABCEstimator(object):
 
         obs_data = full_data[(full_data.delta0 * full_data.delta1 == 1)]
         obs_data = obs_data[obs_data.x != 0]
-        # obsData <- obsData[which(obsData$x+deltaStar<=obsData$v),]
 
         self.w = full_data.w
         self.v = obs_data.v

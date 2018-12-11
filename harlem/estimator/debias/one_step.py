@@ -38,10 +38,10 @@ class HarlemOneStep(HarlemABC):
             i2lambda = integrate.quad(lambda t: (t ** 2) * self.lambda_fun(t), 0, self.tau)[0]
             lambda_matrix = np.array([[i0lambda, i1lambda], [i1lambda, i2lambda]])
 
-            return self.init_psi - np.linalg.solve(lambda_matrix, np.sum(lambda_grad, axis=1))[:, 0] / self.n_obs
+            return self.init_psi - np.linalg.solve(lambda_matrix, np.mean(lambda_grad, axis=1))[:, 0]
 
         else:
 
             lambda_grad = [self.lambda_fun(x) * influence_curve(x, v) for x, v in zip(self.x, self.v)]
             inv_lambda = 1 / integrate.quad(self.lambda_fun, 0, self.tau)[0]
-            return self.init_psi - inv_lambda * sum(lambda_grad) / self.n_obs
+            return self.init_psi - inv_lambda * np.mean(lambda_grad)
