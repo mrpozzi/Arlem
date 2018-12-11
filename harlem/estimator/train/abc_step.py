@@ -15,7 +15,6 @@ class ABCStep(object):
 
         obs_data = full_data[(full_data.delta0 * full_data.delta1 == 1)]
         obs_data = obs_data[obs_data.x != 0]
-        # obsData <- obsData[which(obsData$x+deltaStar<=obsData$v),]
 
         self.w = full_data.w
         self.v = obs_data.v
@@ -23,13 +22,15 @@ class ABCStep(object):
         self.n_full = obs_data.shape[0]
 
         if tol is None:
-            tol = 1/ np.sqrt(self.n_full)
+            tol = 1 / np.sqrt(self.n_full)
 
         self.T1 = T1
         self.T2 = T2
         self.Q1 = Q1
+
         self.x_grid = x_grid
         self.v_grid = v_grid
+
         self.delta_star = delta_star
         self.tol = tol
         self.tau = tau
