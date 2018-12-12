@@ -59,11 +59,11 @@ class ABCStep(object):
         return repr_str
 
     @abstractmethod
-    def iterate(self, Q2):
+    def iterate(self, Q2, gradient):
         pass
 
     @abstractmethod
-    def tmle_step(self, Q2):
+    def tmle_step(self, Q2, gradient):
         pass
 
 

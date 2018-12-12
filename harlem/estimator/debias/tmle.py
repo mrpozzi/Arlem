@@ -1,9 +1,8 @@
-import pandas as pd
-
 from harlem.estimator.train.step_linear import StepLinear
 from harlem.estimator.linear_estimator import LinearEstimator
 
 from harlem.estimator.debias.harlem import HarlemABC
+
 
 # TODO: Fix this
 class HarlemTMLE(HarlemABC):
@@ -45,8 +44,8 @@ class HarlemTMLE(HarlemABC):
                 print("{} ".format(self.iterations), end="", flush=True)
 
             self.iterations += 1
-
-            self.Q2 = self.target_step.iterate(self.Q2)
+            gradient = self.get_gradient(self.Q2)
+            self.Q2 = self.target_step.iterate(self.Q2, gradient)
 
             self.has_converged = self.target_step.converged
 
@@ -56,4 +55,5 @@ class HarlemTMLE(HarlemABC):
         if self.verbose:
             print("\n")
         theta = self.estimator.psi(self.Q2)
-        self.theta_hat = pd.concat(self.init_psi, theta)
+        self.theta_hat = theta
+        return theta

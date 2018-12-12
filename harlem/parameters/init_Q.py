@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.integrate import simps
 
 from statsmodels.distributions.empirical_distribution import StepFunction
 from statsmodels.nonparametric.kernel_density import KDEMultivariate
@@ -16,18 +17,7 @@ def get_survival_function(time, event, entry=None):
 
 
 def compute_normalization(Q2, x_grid, v_grid):
-    normalizing_constant = 0.0
-
-    for i, _ in enumerate(x_grid[1:]):
-        for j, _ in enumerate(v_grid[1:]):
-            phi00 = Q2[i, j]
-            phi10 = Q2[i, j + 1]
-            phi01 = Q2[i + 1, j]
-            phi11 = Q2[i + 1, j + 1]
-
-            normalizing_constant += ((x_grid[i + 1] - x_grid[i]) * (v_grid[j + 1] - v_grid[j]) *
-                                     ((phi00 + phi01 + phi11) / 3. +
-                                      (phi00 + phi10 + phi11) / 3.) / 2.)
+    normalizing_constant = simps(np.apply_along_axis(lambda f: simps(f, v_grid), 1, Q2), x_grid)
     return normalizing_constant
 
 

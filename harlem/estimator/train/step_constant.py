@@ -12,12 +12,12 @@ class StepConstant(ABCStep):
     def __repr__(self):
         return super(StepConstant, self).__repr__()
 
-    def iterate(self, Q2):
+    def iterate(self, Q2, gradient):
 
         Q2 = self.tmle_step(Q2)
 
-        #if (any(Q2 < 0))
-        #stop("Negative Elements in Q2...\a")
+        if (Q2 < 0).any():
+            raise Exception("Negative Elements in Q2.")
 
         if self.verbose:
             print("D: {norm_grad}, |  log-Likelihood = {log_likelihood}".format(
@@ -27,16 +27,8 @@ class StepConstant(ABCStep):
         self.converged = (abs(self.normalized_gradient) < self.tol)
         return Q2
 
-    def tmle_step(self, Q2):
+    def tmle_step(self, Q2, gradient):
 
-        t1_slice = np.apply_along_axis(lambda f: simps(f, self.v_grid), 1, self.T1 * Q2)
-        t2_slice = np.apply_along_axis(lambda f: simps(f, self.v_grid), 1, self.T2 * Q2)
-
-        # Compute the Gradient and the boundaries for the optimization problem
-        gradient = (np.apply_along_axis(lambda t1: [0 if (np.abs(d) < SQRT_DBL_EPSILON) else n / d
-                                                    for n, d in zip(t1, t1_slice)], 0, self.T1) -
-                    np.apply_along_axis(lambda t2: [0 if (np.abs(d) < SQRT_DBL_EPSILON) else n / d
-                                                    for n, d in zip(t2, t2_slice)], 0, self.T2))
         grad_max = np.abs(gradient).max()
 
         # Evaluate the Gradient @ the observed data
