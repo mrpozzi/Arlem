@@ -1,8 +1,6 @@
 import numpy as np
 from scipy import interpolate
-from scipy.integrate import simps
 
-from harlem.utils import SQRT_DBL_EPSILON
 from harlem.estimator.train.abc_step import ABCStep
 from harlem.parameters.init_Q import compute_normalization
 
@@ -14,7 +12,7 @@ class StepConstant(ABCStep):
 
     def iterate(self, Q2, gradient):
 
-        Q2 = self.tmle_step(Q2)
+        Q2 = self.tmle_step(Q2, gradient)
 
         if (Q2 < 0).any():
             raise Exception("Negative Elements in Q2.")

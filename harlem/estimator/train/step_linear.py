@@ -58,10 +58,10 @@ class StepLinear(ABCStep):
         if self.verbose:
             print("Log-likelihood: {}".format(log_likelihood))
 
-        emp_mean = [gradient.mean(),
-                    np.apply_along_axis(lambda g: np.abs(g) * self.x_grid, 0, gradient).mean()]
-        emp_var = [gradient.var(),
-                   np.apply_along_axis(lambda g: np.abs(g) * self.x_grid, 0, gradient).var()]
+        emp_mean = np.array([gradient.mean(),
+                             np.apply_along_axis(lambda g: np.abs(g) * self.x_grid, 0, gradient).mean()])
+        emp_var = np.array([gradient.var(),
+                            np.apply_along_axis(lambda g: np.abs(g) * self.x_grid, 0, gradient).var()])
         norm_grad = emp_mean / np.sqrt(emp_var)
 
         # Update Q2

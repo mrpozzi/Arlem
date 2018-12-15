@@ -97,4 +97,3 @@ class HarlemCopula(JointDistribution):
         v = self.copula._psi_inv(u, p)
         return np.array([u, v])
 
-

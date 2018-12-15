@@ -7,7 +7,7 @@ import scipy.integrate as integrate
 from scipy.interpolate import interp1d
 from scipy.stats import beta, expon
 
-from harlem.parameters.init_T import SQRT_DBL_EPSILON
+from harlem.utils import SQRT_DBL_EPSILON, get_lambda_matrix
 from harlem.data.harlem_copula import HarlemCopula
 
 
@@ -87,10 +87,7 @@ class DataGeneratorHarlem(object):
         integral_R = [integrate.quad(lambda t: self.lambda_fun(t) * R_fun(t), 0, self.tau)[0],
                       integrate.quad(lambda t: self.lambda_fun(t) * t * R_fun(t), 0, self.tau)[0]]
 
-        i0lambda = integrate.quad(self.lambda_fun, 0, self.tau)[0]
-        i1lambda = integrate.quad(lambda t: t * self.lambda_fun(t), 0, self.tau)[0]
-        i2lambda = integrate.quad(lambda t:  (t ** 2) * self.lambda_fun(t), 0, self.tau)[0]
-        lambda_matrix = np.array([[i0lambda, i1lambda], [i1lambda, i2lambda]])
+        lambda_matrix = get_lambda_matrix(self.lambda_fun, self.tau)
 
         return np.linalg.solve(lambda_matrix, integral_R)
 

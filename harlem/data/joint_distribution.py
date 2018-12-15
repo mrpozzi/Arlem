@@ -33,6 +33,9 @@ class JointDistribution(object):
         self.marginal_rvss = [lambda n: margins['x'].rvs(size=n, **param_margins['x']),
                               lambda n: margins['z'].rvs(size=n, **param_margins['z'])]
 
+        self.marginal_ppfs = [partial(margins['x'].ppf, **param_margins['x']),
+                              partial(margins['z'].ppf, **param_margins['z'])]
+
     @abstractmethod
     def cdf(self, xz, margin=None):
         pass
